@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  postgres-propostaapi:
+    image: postgres:latest
+    container_name: postgres-propostaapi
+    restart: always
+    environment:
+      POSTGRES_DB: PropostaAPIDocker
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata_propostaapi:/var/lib/postgresql/data
+
+volumes:
+  pgdata_propostaapi:

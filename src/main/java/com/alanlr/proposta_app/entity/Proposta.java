@@ -24,7 +24,8 @@ public class Proposta {
     private boolean integrada;
     private String observacao;
 
-    @OneToOne
+    //podemos cadastrar a proposta sem o usuário existente, caso não exista, persiste o novo usuário com essa anotação
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 

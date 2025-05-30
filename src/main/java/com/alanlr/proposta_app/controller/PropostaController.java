@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @AllArgsConstructor
 @RestController
@@ -19,7 +20,12 @@ public class PropostaController {
 
     @PostMapping
     public ResponseEntity<PropostaResponseDto> criar(@RequestBody PropostaRequestDto data){
-        PropostaResponseDto propostaResponseDto = service.criar(data);
-        return ResponseEntity.ok(propostaResponseDto);
+        PropostaResponseDto responseDto = service.criar(data);
+        //usado para retornar no headers da requisição mais informações, como location ex:http://localhost:8080/proposta/1
+        return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(responseDto.getId())
+                .toUri())
+                .body(responseDto);
     }
 }

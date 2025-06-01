@@ -14,5 +14,17 @@ services:
     volumes:
       - pgdata_propostaapi:/var/lib/postgresql/data
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq-propostaapi
+    restart: always
+    ports:
+      - "5673:5672"     # Porta para conexão de aplicações (troquei de 5672 para 5673)
+      - "15673:15672"   # Porta do painel de administração web (troquei de 15672 para 15673)
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+
 volumes:
   pgdata_propostaapi:
+

@@ -1,5 +1,6 @@
 package com.alanlr.proposta_app.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,6 +28,7 @@ public class Proposta {
     //podemos cadastrar a proposta sem o usuário existente, caso não exista, persiste o novo usuário com essa anotação
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "id_usuario")
+    @JsonManagedReference
     private Usuario usuario;
 
 

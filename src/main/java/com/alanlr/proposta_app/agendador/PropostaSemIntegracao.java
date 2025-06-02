@@ -6,7 +6,10 @@ import com.alanlr.proposta_app.service.NotificacaoRabbitMQService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class PropostaSemIntegracao {
@@ -27,6 +30,9 @@ public class PropostaSemIntegracao {
         this.exchange = exchange;
     }
 
+    //scheduled é um agendador de tarefas, ao iniciar a minha aplicação ele é executado
+    // - no caso está aguardando 10 segundos para repetir o método
+    @Scheduled(fixedDelay = 10, timeUnit = TimeUnit.SECONDS)
     public void buscarPropostasSemIntegracao(){
         propostaRepository.findAllByIntegradaIsFalse().forEach(proposta -> {
             try {

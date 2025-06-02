@@ -1,7 +1,6 @@
 package com.alanlr.proposta_app.config;
 
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.QueueBuilder;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -41,4 +40,24 @@ public class RabbitMQConfiguration {
     public ApplicationListener<ApplicationReadyEvent> inicializarAdmin(RabbitAdmin rabbitAdmin){
         return event -> rabbitAdmin.initialize();
     }
+
+    //exchange - pode ser usada diversas vezes (faz o "intercambio")
+    @Bean
+    public FanoutExchange criarFanoutExchangePropostaPendente(){
+        return ExchangeBuilder.fanoutExchange("proposta-pendente.ex").build();
+    }
+
+    //bindings para conectar exchange com as filas
+    @Bean
+    public Binding criarBindingPropostaPendenteMsAnaliseCredito(){
+        return BindingBuilder.bind(criarFilaPropostaPendenteMsAnaliseCredito())
+                .to(criarFanoutExchangePropostaPendente());
+    }
+
+    @Bean
+    public Binding criarBindingPropostaPendenteMsNotificacao(){
+        return BindingBuilder.bind(criarFilaPropostaPendenteMsNotificacao())
+                .to(criarFanoutExchangePropostaPendente());
+    }
+
 }

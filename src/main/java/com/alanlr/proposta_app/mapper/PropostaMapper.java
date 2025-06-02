@@ -22,7 +22,7 @@ public interface PropostaMapper {
     @Mapping(target = "usuario.renda", source = "renda")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "aprovado", ignore = true)
-    @Mapping(target = "integrada", ignore = true)
+    @Mapping(target = "integrada", constant = "true")
     @Mapping(target = "observacao", ignore = true)
     //constroi automaticamente os valores vindos de proposta, os demais como os de usuários devem ser mapeados
     //target = saida    source = dto

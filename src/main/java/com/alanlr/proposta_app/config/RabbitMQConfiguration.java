@@ -14,7 +14,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfiguration {
     @Value("${rabbitmq.propostapendente.exchange}")
-    private String exchange;
+    private String exchangePropostaPendente;
+
+    @Value("${rabbitmq.propostaconcluida.exchange}")
+    private String exchangePropostaConcluida;
 
     @Bean
     public Queue criarFilaPropostaPendenteMsAnaliseCredito(){
@@ -49,7 +52,12 @@ public class RabbitMQConfiguration {
     //exchange - pode ser usada diversas vezes (faz o "intercambio")
     @Bean
     public FanoutExchange criarFanoutExchangePropostaPendente(){
-        return ExchangeBuilder.fanoutExchange(exchange).build();
+        return ExchangeBuilder.fanoutExchange(exchangePropostaPendente).build();
+    }
+
+    @Bean
+    public FanoutExchange criarFanoutExchangePropostaConcluida(){
+        return ExchangeBuilder.fanoutExchange(exchangePropostaConcluida).build();
     }
 
     //bindings para conectar exchange com as filas
@@ -65,6 +73,19 @@ public class RabbitMQConfiguration {
                 .to(criarFanoutExchangePropostaPendente());
     }
 
+    @Bean
+    public Binding criarBindingPropostaConcluidaMsAnaliseCredito(){
+        return BindingBuilder.bind(criarFilaPropostaConcluidaMsProposta())
+                .to(criarFanoutExchangePropostaConcluida());
+    }
+
+    @Bean
+    public Binding criarBindingPropostaConcluidaMsNotificacao(){
+        return BindingBuilder.bind(criarFilaPropostaConcluidaMsNotificacao())
+                .to(criarFanoutExchangePropostaConcluida());
+    }
+
+    //configurações para converter json
     @Bean
     public Jackson2JsonMessageConverter jackson2JsonMessageConverter(){
         return new Jackson2JsonMessageConverter();

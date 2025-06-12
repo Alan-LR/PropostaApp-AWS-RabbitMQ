@@ -1,7 +1,9 @@
 package com.alanlr.proposta_app.listener;
 
 import com.alanlr.proposta_app.entity.Proposta;
+import com.alanlr.proposta_app.mapper.PropostaMapper;
 import com.alanlr.proposta_app.repository.PropostaRepository;
+import com.alanlr.proposta_app.service.WebSocketService;
 import lombok.AllArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Component;
 public class PropostaConcluidaListener {
 
     private PropostaRepository propostaRepository;
+
+    private WebSocketService webSocketService;
 
     @RabbitListener(queues = "${rabbitmq.queue.proposta.concluida}")
     public void propostaConcluida(Proposta propostaPayload) {
@@ -22,6 +26,8 @@ public class PropostaConcluidaListener {
             // IMPORTANTE: não sobrescreva `usuario` nem outros objetos aninhados com instâncias desanexadas
 
             propostaRepository.save(proposta); // salva a entidade gerenciada
+
+            webSocketService.notificar(PropostaMapper.INSTANCE.convetEntityToDto(proposta));
         }, () -> {
             // Em caso de proposta não encontrada, evite salvar direto o payload desanexado!
             System.out.println("Proposta com id {} não encontrada. Ignorando mensagem." + propostaPayload.getId());

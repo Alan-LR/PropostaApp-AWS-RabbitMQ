@@ -27,7 +27,7 @@ public class PropostaService {
         this.exchange = exchange;
     }
 
-    public PropostaResponseDto criar(PropostaRequestDto data){
+    public PropostaResponseDto criar(PropostaRequestDto data) {
         Proposta proposta = PropostaMapper.INSTANCE.convertDtoToProposta(data);
         repository.save(proposta);
 
@@ -36,10 +36,10 @@ public class PropostaService {
         return PropostaMapper.INSTANCE.convetEntityToDto(proposta);
     }
 
-    private void notificarRabbitMQ(Proposta proposta){
+    private void notificarRabbitMQ(Proposta proposta) {
         try {
             notificacaoRabbitMQService.notificar(proposta, exchange);
-        }catch (RuntimeException ex){
+        } catch (RuntimeException ex) {
             proposta.setIntegrada(false);
             repository.save(proposta);
         }
@@ -50,5 +50,4 @@ public class PropostaService {
         return PropostaMapper.INSTANCE.convertListEntityToListDto(repository.findAll());
     }
 }
-
 
